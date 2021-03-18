@@ -1317,7 +1317,16 @@ static NSDictionary* extras;
         return NO;
     }
     
-    return [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:urlPrefix]];
+    __block BOOL result = FALSE;
+  
+    dispatch_queue_t main = dispatch_get_main_queue();
+
+    dispatch_sync(main, ^{
+      // read and assign here
+      result = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:urlPrefix]];
+    });
+  
+  return result;
 }
 
 -(void) ensureNavigateParamNames{
